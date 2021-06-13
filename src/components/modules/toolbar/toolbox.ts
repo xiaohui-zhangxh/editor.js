@@ -218,7 +218,7 @@ export default class Toolbox extends Module<ToolboxNodes> {
     //   return;
     // }
 
-    const button = $.make('li', [ this.CSS.toolboxButton ]);
+    const button = $.make('div', [ this.CSS.toolboxButton ]);
 
     button.dataset.tool = tool.name;
     button.innerHTML = toolToolboxSettings.icon;
@@ -338,11 +338,14 @@ export default class Toolbox extends Module<ToolboxNodes> {
    */
   private insertNewBlock(toolName: string): void {
     const { BlockManager, Caret } = this.Editor;
-    const { currentBlock } = BlockManager;
+    // const { currentBlock } = BlockManager;
+    const currentBlock = this.Editor.Toolbar.currentBlock || BlockManager.currentBlock;
+    const currentBlockIndex = BlockManager.getBlockIndex(currentBlock);
 
     const newBlock = BlockManager.insert({
       tool: toolName,
       replace: currentBlock.isEmpty,
+      index: currentBlock.isEmpty ? currentBlockIndex : currentBlockIndex + 1
     });
 
     /**

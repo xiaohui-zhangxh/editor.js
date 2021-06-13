@@ -771,6 +771,14 @@ export default class BlockManager extends Module {
   private bindBlockEvents(block: Block): void {
     const { BlockEvents } = this.Editor;
 
+    this.readOnlyMutableListeners.on(block.holder, 'mouseenter', (event: MouseEvent) => {
+      BlockEvents.mouseEnter(event);
+    });
+
+    this.readOnlyMutableListeners.on(block.holder, 'mouseleave', (event: MouseEvent) => {
+      BlockEvents.mouseLeave(event);
+    });
+
     this.readOnlyMutableListeners.on(block.holder, 'keydown', (event: KeyboardEvent) => {
       BlockEvents.keydown(event);
     });

@@ -2,7 +2,9 @@
   &:first-of-type {
     margin-top: 0;
   }
-
+  &--hover{
+    background-color: aliceblue;
+  }
   &--selected &__content {
     background: var(--selectionColor);
 
@@ -75,6 +77,10 @@
   i {
     font-style: italic;
   }
+}
+
+.ce-block--focused{
+  background-color: azure;
 }
 
 .codex-editor--narrow .ce-block--focused {

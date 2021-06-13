@@ -10,6 +10,19 @@ import Flipper from '../flipper';
  *
  */
 export default class BlockEvents extends Module {
+  public mouseEnter(event: MouseEvent): void {
+    if(this.Editor.Toolbox.opened) return;
+    const block = this.Editor.BlockManager.getBlockByChildNode(event.target as Node);
+    block.holder.classList.toggle('ce-block--hover', true)
+    this.Editor.Toolbar.move2(block);
+  }
+  public mouseLeave(event: MouseEvent): void {
+    if(this.Editor.Toolbox.opened) return;
+    const block = this.Editor.BlockManager.getBlockByChildNode(event.target as Node);
+    if(!block) return;
+    block.holder.classList.toggle('ce-block--hover', false)
+  }
+
   /**
    * All keydowns on Block
    *
@@ -257,7 +270,7 @@ export default class BlockEvents extends Module {
     /**
      * If new Block is empty
      */
-    if (newCurrent.tool.isDefault && newCurrent.isEmpty) {
+    // if (newCurrent.tool.isDefault && newCurrent.isEmpty) {
       /**
        * Show Toolbar
        */
@@ -267,7 +280,7 @@ export default class BlockEvents extends Module {
        * Show Plus Button
        */
       this.Editor.Toolbar.plusButton.show();
-    }
+    // }
 
     event.preventDefault();
   }
@@ -530,6 +543,7 @@ export default class BlockEvents extends Module {
    * If Toolbox is not open, then just open it and show plus button
    */
   private activateToolbox(): void {
+    console.log('this.Editor.Toolbar.opened', this.Editor.Toolbar.opened)
     if (!this.Editor.Toolbar.opened) {
       this.Editor.Toolbar.open(false, false);
       this.Editor.Toolbar.plusButton.show();

@@ -52,12 +52,14 @@ export default class UI extends Module<UINodes> {
    * @returns {{editorWrapper: string, editorZone: string}}
    */
   public get CSS(): {
-    editorWrapper: string; editorWrapperNarrow: string; editorZone: string; editorZoneHidden: string;
+    editorWrapper: string; editorWrapperNarrow: string; editorWrapperHover: string;
+    editorZone: string; editorZoneHidden: string;
     editorLoader: string; editorEmpty: string; editorRtlFix: string;
     } {
     return {
       editorWrapper: 'codex-editor',
       editorWrapperNarrow: 'codex-editor--narrow',
+      editorWrapperHover: 'codex-editor--hover',
       editorZone: 'codex-editor__redactor',
       editorZoneHidden: 'codex-editor__redactor--hidden',
       editorLoader: 'codex-editor__loader',
@@ -278,6 +280,16 @@ export default class UI extends Module<UINodes> {
     if (this.nodes.holder.offsetWidth < this.contentRect.width) {
       this.nodes.wrapper.classList.add(this.CSS.editorWrapperNarrow);
     }
+
+    this.nodes.holder.addEventListener('mouseleave', (_) => {
+      if(this.Editor.Toolbox.opened) return;
+      this.nodes.holder.classList.toggle(this.CSS.editorWrapperHover, false)
+    })
+
+    this.nodes.holder.addEventListener('mouseenter', (_) => {
+      if(this.Editor.Toolbox.opened) return;
+      this.nodes.holder.classList.toggle(this.CSS.editorWrapperHover, true)
+    })
 
     /**
      * Set customizable bottom zone height

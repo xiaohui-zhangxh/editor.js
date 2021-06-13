@@ -15,6 +15,10 @@
     margin-top: 5px;
   }
 
+  .codex-editor--hover & {
+    display: block;
+  }
+
   &--opened {
     display: block;
 
@@ -74,7 +78,7 @@
     position: absolute;
     right: -30px;
     top: 5px;
-    opacity: 0;
+    display: none;
 
     @media (--mobile){
       position: absolute;
@@ -86,7 +90,7 @@
     }
 
     &--opened {
-      opacity: 1;
+      display: block;
     }
 
     &-buttons {

@@ -7,6 +7,7 @@ import Tooltip from '../../utils/tooltip';
 import { ModuleConfig } from '../../../types-internal/module-config';
 import EventsDispatcher from '../../utils/events';
 import { EditorConfig } from '../../../../types';
+import Block from '../../block';
 
 /**
  * HTML Elements used for Toolbar UI
@@ -135,13 +136,15 @@ export default class Toolbar extends Module<ToolbarNodes> {
    */
   public get plusButton(): { hide: () => void; show: () => void } {
     return {
-      hide: (): void => this.nodes.plusButton.classList.add(this.CSS.plusButtonHidden),
-      show: (): void => {
-        if (this.Editor.Toolbox.isEmpty) {
-          return;
-        }
-        this.nodes.plusButton.classList.remove(this.CSS.plusButtonHidden);
-      },
+      hide: (): void => { return },
+      show: (): void => { return }
+      // hide: (): void => this.nodes.plusButton.classList.add(this.CSS.plusButtonHidden),
+      // show: (): void => {
+      //   if (this.Editor.Toolbox.isEmpty) {
+      //     return;
+      //   }
+      //   this.nodes.plusButton.classList.remove(this.CSS.plusButtonHidden);
+      // },
     };
   }
 
@@ -178,6 +181,46 @@ export default class Toolbar extends Module<ToolbarNodes> {
     }
   }
 
+  public get currentBlock(): Block {
+    const { blockId } = this.nodes.wrapper.dataset;
+    if(!blockId){
+      return null;
+    }
+    return this.Editor.BlockManager.getBlockById(blockId);
+  }
+
+  /**
+   * move2
+   */
+  public move2(block: Block) {
+    const currentBlock = block.holder;
+    if(!currentBlock){
+      return
+    }
+    this.nodes.wrapper.dataset.blockId = block.id;
+
+    const { isMobile } = this.Editor.UI;
+    const blockHeight = currentBlock.offsetHeight;
+    let toolbarY = currentBlock.offsetTop;
+
+    /**
+     * 1) On desktop — Toolbar at the top of Block, Plus/Toolbox moved the center of Block
+     * 2) On mobile — Toolbar at the bottom of Block
+     */
+    if (!isMobile) {
+      const contentOffset = Math.floor(blockHeight / 2);
+
+      this.nodes.plusButton.style.transform = `translate3d(0, calc(${contentOffset}px - 50%), 0)`;
+      this.Editor.Toolbox.nodes.toolbox.style.transform = `translate3d(0, calc(${contentOffset}px - 50%), 0)`;
+    } else {
+      toolbarY += blockHeight;
+    }
+
+    /**
+     * Move Toolbar to the Top coordinate of Block
+     */
+    this.nodes.wrapper.style.transform = `translate3D(0, ${Math.floor(toolbarY)}px, 0)`;
+  }
   /**
    * Move Toolbar to the Current Block
    *
@@ -285,7 +328,7 @@ export default class Toolbar extends Module<ToolbarNodes> {
     $.append(this.nodes.plusButton, $.svg('plus', 14, 14));
     $.append(this.nodes.content, this.nodes.plusButton);
 
-    this.readOnlyMutableListeners.on(this.nodes.plusButton, 'click', () => {
+    this.readOnlyMutableListeners.on(this.nodes.plusButton, 'click', (event) => {
       this.plusButtonClicked();
     }, false);
 
